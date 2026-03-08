@@ -1,0 +1,25 @@
+.idea/
+*.iml
+out/
+gen/
+
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+
+### Mac OS ###
+.DS_Store
+
+# -- Lab 8 --
+lab8oop/data/highscore.txt
+data/logs/*.txt
+.log
+.tmp
