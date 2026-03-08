@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 /**
  * Read and write the best (the least) guessing score.
@@ -16,7 +17,7 @@ import java.nio.file.Paths;
 public final class HighScoreService
 {
     private static final String KEY = "COUNTRY=";
-    private static final int NO_BEST_SCORE = Integer.MAX_VALUE;
+    public static final int NO_BEST_SCORE = Integer.MAX_VALUE;
 
     private final Path path;
 
@@ -33,7 +34,7 @@ public final class HighScoreService
     /**
      * Read the high score from the file.
      *
-     * @return the best score or Integer.MAX_VALUE if none exists or the file is malformed.
+     * @return the best score or  NO_BEST_SCORE if none exists or the file is malformed.
      */
     public int readBestScore()
     {
@@ -61,5 +62,31 @@ public final class HighScoreService
         return NO_BEST_SCORE;
     }
 
+    /**
+     * Save the high score to the file.
+     *
+     * @param newHighScore new score to be updated
+     */
+    public void saveHighScore(final int newHighScore)
+    {
+        final String updatedScore;
+        updatedScore = KEY + newHighScore;
 
+        try
+        {
+            if(Files.notExists(this.path))
+            {
+                Files.createFile(this.path);
+            }
+
+            Files.writeString(this.path, updatedScore,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.WRITE,
+                    StandardOpenOption.TRUNCATE_EXISTING);
+        }
+        catch (final IOException e)
+        {
+            System.err.println("Error saving high score" + e.getMessage());
+        }
+    }
 }

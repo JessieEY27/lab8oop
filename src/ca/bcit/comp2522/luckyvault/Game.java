@@ -56,11 +56,9 @@ public final class Game
         lowerSecretWord = secretWord.toLowerCase();
         guessingCount = INITIAL_GUESSING_COUNT;
 
-        System.out.println(secretWord); // 삭제 필요
-
         System.out.println("LUCKY VAULT - COUNTRY MODE. Type QUIT to exit");
         System.out.println("Secret word length: " + secretWordLength);
-        System.out.println("Current best: —"); // === needs to be fixed =====
+        displayHighScore();
 
         while(true)
         {
@@ -113,16 +111,32 @@ public final class Game
             }
             else
             {
-                // =   =====needs to be checked if it is the highscore. =====
                 System.out.println("Correct in " + guessingCount + " attempts!" +
                         " Word was: " + secretWord);
+                compareHighScore(guessingCount);
                 break;
             }
-
-
         }
-
     }
+
+    /**
+     *  Read the current best score from the file and display it.
+     */
+    private void displayHighScore()
+    {
+        final int bestScore;
+        bestScore = this.scoreService.readBestScore();
+
+        if(bestScore == HighScoreService.NO_BEST_SCORE)
+        {
+            System.out.println("Current best: —");
+        }
+        else
+        {
+            System.out.println("Current best: " + bestScore);
+        }
+    }
+
 
     /**
      * Validates if the input is appropriate for the game
@@ -139,6 +153,24 @@ public final class Game
         }
 
         return true;
+    }
+
+    /**
+     * Compare the current guessing count with the best score.
+     * Update the high score if the current count is lower
+     *
+     * @param guessingCounts the number of guesses taken to find the correct answer.
+     */
+    private void compareHighScore(final int guessingCounts)
+    {
+        final int bestScore;
+        bestScore = this.scoreService.readBestScore();
+
+        if(guessingCounts < bestScore)
+        {
+            this.scoreService.saveHighScore(guessingCounts);
+            System.out.println("NEW BEST for COUNTRY mode!");
+        }
     }
 
     /**

@@ -23,3 +23,4 @@ lab8oop/data/highscore.txt
 data/logs/*.txt
 .log
 .tmp
+data/highscore.txt
