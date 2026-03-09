@@ -3,7 +3,6 @@ package ca.bcit.comp2522.luckyvault;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-import java.io.IOException;
 
 /**
  * Demonstrates the country guessing game.
@@ -23,6 +22,7 @@ public final class Game
     private final WordList wordList;
     private final Scanner inputScanner;
     private final HighScoreService scoreService;
+    private final LoggerService loggerService;
 
     /**
      *  Constructs a Game object
@@ -33,6 +33,7 @@ public final class Game
         this.wordList = new WordList(COUNTRY_FILE);
         this.scoreService = new HighScoreService(SCORE_FILE);
         this.inputScanner = new Scanner(System.in, StandardCharsets.UTF_8);
+        this.loggerService = new LoggerService();
     }
 
     /**
@@ -81,13 +82,14 @@ public final class Game
                 break;
             }
 
-            // guessing game start
+            // Guessing game start
             guessingCount++;
 
             if(trimmedInput.length() != secretWordLength)
             {
                 System.out.println("Wrong length (" + trimmedInput.length() +")." +
                         " Need " + secretWordLength + ".");
+                loggerService.log(trimmedInput, "wrong_length");
                 continue;
             }
 
@@ -108,15 +110,20 @@ public final class Game
 
                 System.out.println("Not it. " + correctCount +
                         " letter(s) correct (right position).");
+                loggerService.log(trimmedInput, "matches=" + correctCount);
             }
             else
             {
                 System.out.println("Correct in " + guessingCount + " attempts!" +
                         " Word was: " + secretWord);
+                loggerService.log(trimmedInput, "CORRECT in " + guessingCount);
+
                 compareHighScore(guessingCount);
                 break;
             }
         }
+
+        loggerService.closeFile();
     }
 
     /**
@@ -133,7 +140,7 @@ public final class Game
         }
         else
         {
-            System.out.println("Current best: " + bestScore);
+            System.out.println("Current best: " + bestScore + "attempts");
         }
     }
 
@@ -156,7 +163,7 @@ public final class Game
     }
 
     /**
-     * Compare the current guessing count with the best score.
+     * Compares the current guessing count with the best score.
      * Update the high score if the current count is lower
      *
      * @param guessingCounts the number of guesses taken to find the correct answer.
@@ -166,7 +173,8 @@ public final class Game
         final int bestScore;
         bestScore = this.scoreService.readBestScore();
 
-        if(guessingCounts < bestScore)
+        if(bestScore == HighScoreService.NO_BEST_SCORE ||
+                guessingCounts < bestScore)
         {
             this.scoreService.saveHighScore(guessingCounts);
             System.out.println("NEW BEST for COUNTRY mode!");
@@ -187,15 +195,15 @@ public final class Game
             game = new Game();
             game.play();
         }
-        catch (final IOException e)
+        catch(final IOException e)
         {
             System.err.println("Error: Could not load the word list. " + e.getMessage());
         }
-        catch (final IllegalStateException e)
+        catch(final IllegalStateException e)
         {
             System.err.println("Error: The game state is invalid. " + e.getMessage());
         }
-        catch (final Exception e)
+        catch(final Exception e)
         {
             System.err.println("Unexpected error: " + e.getMessage());
         }

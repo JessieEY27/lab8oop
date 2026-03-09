@@ -84,9 +84,9 @@ public final class HighScoreService
                     StandardOpenOption.WRITE,
                     StandardOpenOption.TRUNCATE_EXISTING);
         }
-        catch (final IOException e)
+        catch(final IOException e)
         {
-            System.err.println("Error saving high score" + e.getMessage());
+            System.err.println("Error saving high score: " + e.getMessage());
         }
     }
 }
