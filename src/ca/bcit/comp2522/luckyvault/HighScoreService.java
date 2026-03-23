@@ -53,7 +53,7 @@ public final class HighScoreService
                 return Integer.parseInt(content.substring(KEY.length()));
             }
         }
-        catch (final IOException | NumberFormatException e)
+        catch(final IOException | NumberFormatException e)
         {
 
             return NO_BEST_SCORE;
