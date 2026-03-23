@@ -140,7 +140,7 @@ public final class Game
         }
         else
         {
-            System.out.println("Current best: " + bestScore + "attempts");
+            System.out.println("Current best: " + bestScore + " attempts");
         }
     }
 
